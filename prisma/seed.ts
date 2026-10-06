@@ -70,9 +70,9 @@ const people: SeedPerson[] = [
   { key: "zaineb_ammar", name: "Zaineb", gen: 3, order: 1, spouse: "ammar", birthYear: 1996,
     avatar: { gender: "women", faceShape: "square", skin: "amber", hair: "sleek-bob", hairColor: "black", top: "tank" } },
 
-  { key: "maria_big", name: "Maria Arsiwala", gen: 3, order: 2, parents: ["mustansir_sr", "nilupher"], spouse: "abdeali", birthYear: 1993,
+  { key: "maria_big", name: "Maria Arsiwala", gen: 3, order: 2, parents: ["mustansir_sr", "nilupher"], spouse: "abdeali", birthYear: 1999,
     avatar: { gender: "women", faceShape: "triangular", skin: "porcelain", hair: "textured-waves", hairColor: "platinum-white", top: "tank", bottom: "skirt" } },
-  { key: "abdeali", name: "Abdeali Arsiwala", gen: 3, order: 3, spouse: "maria_big", birthYear: 1999,
+  { key: "abdeali", name: "Abdeali Arsiwala", gen: 3, order: 3, spouse: "maria_big", birthYear: 1993,
     avatar: { gender: "men", faceShape: "round", skin: "amber", hair: "simple-medium", hairColor: "black" } },
 
   { key: "arwa", name: "Arwa", gen: 3, order: 4, parents: ["huzefa", "jumana"], birthYear: 2005,

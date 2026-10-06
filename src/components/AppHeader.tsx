@@ -2,9 +2,10 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Users, Lock } from "lucide-react";
-import { IRIS, ROSE, IRIS_LIGHT, TEXT_PRIMARY, TEXT_TERTIARY, TEXT_SECONDARY, GLASS_BORDER, HAIRLINE, FONT } from "@/lib/theme";
+import { Lock } from "lucide-react";
+import { IRIS, IRIS_LIGHT, TEXT_SECONDARY, GLASS_BORDER, HAIRLINE, FONT } from "@/lib/theme";
 import { SegmentedControl, CountChip } from "./Glass";
+import { LogoMark, Wordmark } from "./Logo";
 
 const TABS = [
   { id: "/", label: "Canvas" },
@@ -28,24 +29,19 @@ export default function AppHeader() {
   const onAdmin = pathname.startsWith("/admin");
 
   return (
-    <header style={{ position: "relative", zIndex: 10, background: "rgba(11,11,14,0.7)", backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)", borderBottom: `1px solid ${HAIRLINE}`, flexShrink: 0 }}>
-      <div className="px-4 sm:px-6 py-3.5 flex items-center justify-between flex-wrap gap-3">
-        <Link href="/" className="flex items-center gap-3" style={{ textDecoration: "none" }}>
-          <div style={{ width: 32, height: 32, borderRadius: 10, background: `linear-gradient(135deg, ${IRIS}, ${ROSE})`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-            <Users size={16} color="#fff" strokeWidth={2.2} />
-          </div>
-          <div>
-            <div style={{ fontFamily: FONT, fontSize: 15.5, fontWeight: 700, letterSpacing: "-0.02em", color: TEXT_PRIMARY, lineHeight: 1.1 }}>Lokhandwala</div>
-            <div style={{ fontFamily: FONT, fontSize: 11, color: TEXT_TERTIARY, letterSpacing: "-0.005em" }}>Family Lineage</div>
-          </div>
+    <header className="app-header" style={{ position: "relative", zIndex: 10, background: "rgba(11,11,14,0.7)", backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)", borderBottom: `1px solid ${HAIRLINE}`, flexShrink: 0 }}>
+      <div className="app-header-row px-4 sm:px-6 py-3.5 flex items-center justify-between flex-wrap gap-3">
+        <Link href="/" className="flex items-center gap-3" style={{ textDecoration: "none" }} aria-label="Lokhandwala Family - home">
+          <LogoMark size={40} />
+          <Wordmark />
         </Link>
 
-        <SegmentedControl options={TABS} value={activeTab} onChange={(id) => router.push(id)} />
+        <div className="tab-row"><SegmentedControl options={TABS} value={activeTab} onChange={(id) => router.push(id)} /></div>
 
         <button
           type="button"
           onClick={() => router.push("/admin")}
-          className="obsidian-btn flex items-center gap-1.5 px-3 py-2"
+          className="obsidian-btn flex items-center gap-1.5 px-3 py-2.5"
           style={{
             border: `1px solid ${onAdmin ? IRIS : GLASS_BORDER}`,
             background: onAdmin ? "rgba(139,92,246,0.16)" : "rgba(255,255,255,0.04)",
@@ -54,8 +50,8 @@ export default function AppHeader() {
           }}
           title="Admin only"
         >
-          <Lock size={11} />
-          Admin
+          <Lock size={13} />
+          <span className="admin-label">Admin</span>
           {queueCount > 0 && <CountChip n={queueCount} />}
         </button>
       </div>

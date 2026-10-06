@@ -20,7 +20,7 @@ export default function AdminPage() {
 
   return (
     <div className="h-full flex flex-col">
-      <div className="flex justify-end px-6 pt-4">
+      <div className="flex justify-end px-4 sm:px-6 pt-3">
         <GlassButton variant="subtle" onClick={logout}>Log out of Admin</GlassButton>
       </div>
       <div className="flex-1 min-h-0">

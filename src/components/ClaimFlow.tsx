@@ -172,11 +172,11 @@ export default function ClaimFlow({ members }: { members: FamilyMemberDTO[] }) {
             <div className="flex flex-col gap-4">
               <TextField label="Full Name" value={name} onChange={setName} placeholder="As it should appear on the tree" />
               <TextField label="Email Address" value={email} onChange={setEmail} placeholder="you@example.com" type="email" />
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid gap-3" style={{ gridTemplateColumns: "minmax(118px, 1fr) 2fr" }}>
                 <SelectField label="Country Code" value={phoneCountryCode} onChange={setPhoneCountryCode}>
                   {COUNTRY_CODES.map((c) => <option key={c.code} value={c.code}>{c.label}</option>)}
                 </SelectField>
-                <div style={{ gridColumn: "span 2" }}>
+                <div>
                   <TextField label="Phone Number" value={phoneNumber} onChange={setPhoneNumber} placeholder="98765 43210" />
                 </div>
               </div>

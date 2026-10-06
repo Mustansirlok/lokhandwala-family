@@ -57,7 +57,7 @@ export default function AdminQueue({ members, onApproved }: { members: FamilyMem
 
   return (
     <div className="h-full overflow-y-auto" style={{ background: OBSIDIAN }}>
-      <div className="px-6 pt-5 pb-3 flex items-center gap-2" style={{ borderBottom: `1px solid ${HAIRLINE}` }}>
+      <div className="px-4 sm:px-6 pt-5 pb-3 flex items-center gap-2" style={{ borderBottom: `1px solid ${HAIRLINE}` }}>
         <Lock size={12} color={IRIS_LIGHT} />
         <span style={{ fontFamily: FONT, fontSize: 11, letterSpacing: "0.06em", color: TEXT_TERTIARY, textTransform: "uppercase" }}>Admin Only</span>
       </div>
@@ -75,11 +75,11 @@ export default function AdminQueue({ members, onApproved }: { members: FamilyMem
           <p style={{ fontFamily: FONT, fontSize: 13, color: TEXT_SECONDARY, marginTop: 6 }}>Every claim has been reviewed.</p>
         </div>
       ) : (
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           <div style={{ fontFamily: FONT, fontSize: 11, letterSpacing: "0.06em", color: TEXT_TERTIARY, textTransform: "uppercase", marginBottom: 12 }}>
             {claims.length} pending claim{claims.length === 1 ? "" : "s"}
           </div>
-          <div className="grid gap-4" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))" }}>
+          <div className="grid gap-4" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(min(300px, 100%), 1fr))" }}>
             {claims.map((c) => {
               const parents = [c.parent1Id, c.parent2Id].filter(Boolean).map((id) => members.find((m) => m.id === id)).filter(Boolean) as FamilyMemberDTO[];
               const relationPreview = parents.length ? `Child of ${parents.map((p) => p.name).join(" & ")}` : "Unlinked";

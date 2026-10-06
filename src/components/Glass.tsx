@@ -83,7 +83,7 @@ export function CountChip({ n }: { n: number }) {
 export function SegmentedControl({ options, value, onChange }: { options: { id: string; label: string }[]; value: string; onChange: (id: string) => void }) {
   const idx = Math.max(0, options.findIndex((o) => o.id === value));
   return (
-    <div style={{ position: "relative", display: "grid", gridTemplateColumns: `repeat(${options.length}, 1fr)`, background: "rgba(255,255,255,0.05)", border: `1px solid ${GLASS_BORDER}`, borderRadius: 14, padding: 3, width: "fit-content" }}>
+    <div className="seg-wrap" style={{ position: "relative", display: "grid", gridTemplateColumns: `repeat(${options.length}, 1fr)`, background: "rgba(255,255,255,0.05)", border: `1px solid ${GLASS_BORDER}`, borderRadius: 14, padding: 3 }}>
       <div
         style={{
           position: "absolute", top: 3, bottom: 3,
@@ -100,7 +100,8 @@ export function SegmentedControl({ options, value, onChange }: { options: { id: 
             key={o.id}
             type="button"
             onClick={() => onChange(o.id)}
-            style={{ position: "relative", zIndex: 1, padding: "8px 16px", fontFamily: FONT, fontSize: 13, fontWeight: 600, letterSpacing: "-0.01em", color: active ? "#fff" : TEXT_SECONDARY, whiteSpace: "nowrap", cursor: "pointer" }}
+            className="seg-btn"
+            style={{ position: "relative", zIndex: 1, fontFamily: FONT, fontSize: 13, fontWeight: 600, letterSpacing: "-0.01em", color: active ? "#fff" : TEXT_SECONDARY, whiteSpace: "nowrap", cursor: "pointer" }}
           >
             {o.label}
           </button>
