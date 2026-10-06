@@ -1,0 +1,15 @@
+export const OBSIDIAN = "#0B0B0E";
+export const SURFACE = "#121217";
+export const SURFACE_2 = "#17171D";
+export const GLASS_BG = "rgba(22,22,29,0.72)";
+export const GLASS_BORDER = "rgba(255,255,255,0.08)";
+export const IRIS = "#8B5CF6";
+export const IRIS_LIGHT = "#A78BFA";
+export const ROSE = "#E0B094";
+export const VERIFIED = "#34D399";
+export const DANGER = "#F87171";
+export const TEXT_PRIMARY = "rgba(255,255,255,0.92)";
+export const TEXT_SECONDARY = "rgba(255,255,255,0.56)";
+export const TEXT_TERTIARY = "rgba(255,255,255,0.32)";
+export const HAIRLINE = "rgba(255,255,255,0.08)";
+export const FONT = "'Inter', -apple-system, 'SF Pro Display', system-ui, sans-serif";

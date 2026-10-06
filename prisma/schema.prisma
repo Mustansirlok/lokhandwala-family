@@ -1,0 +1,83 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Supabase: use the pooled connection string for DATABASE_URL (serverless-friendly)
+// and the direct connection string for DIRECT_URL (used only for migrations).
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model FamilyMember {
+  id       String @id @default(cuid())
+  name     String
+  gen      Int
+  order    Int    @default(0)
+
+  parent1Id String?
+  parent2Id String?
+  parent1   FamilyMember? @relation("Parent1Children", fields: [parent1Id], references: [id])
+  parent2   FamilyMember? @relation("Parent2Children", fields: [parent2Id], references: [id])
+  childrenAsParent1 FamilyMember[] @relation("Parent1Children")
+  childrenAsParent2 FamilyMember[] @relation("Parent2Children")
+
+  spouseId String?
+  relation String  @default("")
+
+  // vitals — all optional, filled in by the family over time.
+  // birthYear (not a static age) is what lets age auto-increment with time.
+  birthYear        Int?
+  deceased         Boolean @default(false)
+  email            String?
+  height           String?
+  phoneCountryCode String?
+  phoneNumber      String?
+  bloodGroup       String?
+  bio              String? @db.Text
+
+  avatar Json
+  photos Photo[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Photo {
+  id       String       @id @default(cuid())
+  memberId String
+  member   FamilyMember @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  url      String
+
+  createdAt DateTime @default(now())
+}
+
+enum ClaimStatus {
+  PENDING
+  APPROVED
+  DECLINED
+}
+
+model Claim {
+  id String @id @default(cuid())
+
+  name             String
+  email            String?
+  phoneCountryCode String?
+  phoneNumber      String?
+  birthYear        Int?
+  height           String?
+  bloodGroup       String?
+  bio              String? @db.Text
+
+  avatar    Json
+  photoUrls Json // array of storage URLs uploaded during the claim
+
+  parent1Id String?
+  parent2Id String?
+
+  status ClaimStatus @default(PENDING)
+
+  createdAt DateTime @default(now())
+}
