@@ -6,7 +6,7 @@ import ProfileDossier from "@/components/ProfileDossier";
 import { TEXT_SECONDARY, FONT } from "@/lib/theme";
 
 export default function HomePage() {
-  const { members, loading, error, addPhoto } = useFamilyMembers();
+  const { members, loading, error, addPhoto, updateDetails } = useFamilyMembers();
   const [dossierId, setDossierId] = useState<string | null>(null);
   const dossierMember = dossierId ? members.find((m) => m.id === dossierId) : null;
 
@@ -26,6 +26,7 @@ export default function HomePage() {
           members={members}
           onClose={() => setDossierId(null)}
           onUploadPhoto={(file) => addPhoto(dossierMember.id, file)}
+          onUpdateDetails={(details) => updateDetails(dossierMember.id, details)}
         />
       )}
     </>

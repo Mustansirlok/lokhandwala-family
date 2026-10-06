@@ -1,21 +1,48 @@
 "use client";
 import React, { useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { X, User, Mail, Ruler, Phone, Droplet } from "lucide-react";
+import { X, User, Mail, Ruler, Phone, Droplet, Pencil } from "lucide-react";
 import type { FamilyMemberDTO } from "@/lib/avatarOptions";
-import { genLabel, computeAge } from "@/lib/avatarOptions";
-import { GlassPanel, PillChip } from "./Glass";
+import { genLabel, computeAge, COUNTRY_CODES, BLOOD_GROUPS } from "@/lib/avatarOptions";
+import type { Vitals } from "@/lib/avatarOptions";
+import { GlassPanel, PillChip, GlassButton } from "./Glass";
+import { TextField, SelectField, TextAreaField } from "./FormFields";
 import AvatarPortrait from "./avatar/AvatarPortrait";
 import PhotoGallery from "./PhotoGallery";
 import PhotoLightbox from "./PhotoLightbox";
 import { TEXT_PRIMARY, TEXT_SECONDARY, TEXT_TERTIARY, IRIS_LIGHT, HAIRLINE, FONT } from "@/lib/theme";
 
-export default function ProfileDossier({ member, members, onClose, onUploadPhoto }: {
+export default function ProfileDossier({ member, members, onClose, onUploadPhoto, onUpdateDetails }: {
   member: FamilyMemberDTO;
   members: FamilyMemberDTO[];
   onClose: () => void;
   onUploadPhoto: (file: File) => Promise<void>;
+  onUpdateDetails: (details: Partial<Vitals> & { bio?: string }) => Promise<void>;
 }) {
+  const [editing, setEditing] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [draft, setDraft] = useState<Vitals & { bio: string }>({ ...member.vitals, bio: member.bio || "" });
+  const setField = (k: keyof (Vitals & { bio: string })) => (v: string) => setDraft((d) => ({ ...d, [k]: v }));
+
+  const startEdit = () => {
+    setDraft({ ...member.vitals, phoneCountryCode: member.vitals.phoneCountryCode || "+1", bio: member.bio || "" });
+    setSaveError(null);
+    setEditing(true);
+  };
+  const saveEdit = async () => {
+    setSaving(true);
+    setSaveError(null);
+    try {
+      await onUpdateDetails(draft);
+      setEditing(false);
+    } catch (e: any) {
+      setSaveError(e.message || "Couldn't save — please try again.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   // On touch screens the tap that opens this panel is followed by a "ghost" click on whatever is now under
   // the finger - i.e. this backdrop. Ignore backdrop clicks for a moment after opening so it doesn't close itself.
@@ -54,13 +81,47 @@ export default function ProfileDossier({ member, members, onClose, onUploadPhoto
               <div style={{ fontFamily: FONT, fontSize: 13, color: TEXT_SECONDARY, marginTop: 2 }}>{parentLabel}</div>
             </div>
 
-            <div className="grid grid-cols-2 gap-2.5 mt-6">
-              <PillChip icon={User} label="Age" value={member.deceased ? "In loving memory" : computeAge(v.birthYear)} />
-              <PillChip icon={Droplet} label="Blood Group" value={v.bloodGroup} />
-              <PillChip icon={Ruler} label="Height" value={v.height} />
-              <PillChip icon={Phone} label="Phone" value={phone} />
-              <div className="col-span-2"><PillChip icon={Mail} label="Email" value={v.email} /></div>
-            </div>
+            {editing ? (
+              <div className="flex flex-col gap-4 mt-6">
+                <div>
+                  <TextField label="Birth year" value={draft.birthYear} onChange={(v) => setField("birthYear")(v.replace(/\D/g, "").slice(0, 4))} placeholder="e.g. 1985" type="tel" />
+                  <div style={{ fontFamily: FONT, fontSize: 11.5, color: TEXT_TERTIARY, marginTop: 6 }}>
+                    {computeAge(draft.birthYear) ? `Age shows as ${computeAge(draft.birthYear)} and goes up by itself every year.` : "Age is worked out from the birth year and goes up by itself every year."}
+                  </div>
+                </div>
+                <TextField label="Email" value={draft.email} onChange={setField("email")} placeholder="you@example.com" type="email" />
+                <TextField label="Height" value={draft.height} onChange={setField("height")} placeholder={'e.g. 5\'10" or 178 cm'} />
+                <div className="grid gap-3" style={{ gridTemplateColumns: "minmax(118px, 1fr) 2fr" }}>
+                  <SelectField label="Country code" value={draft.phoneCountryCode} onChange={setField("phoneCountryCode")}>
+                    {COUNTRY_CODES.map((c) => <option key={c.code} value={c.code}>{c.label}</option>)}
+                  </SelectField>
+                  <TextField label="Phone number" value={draft.phoneNumber} onChange={setField("phoneNumber")} placeholder="98765 43210" type="tel" />
+                </div>
+                <SelectField label="Blood group" value={draft.bloodGroup} onChange={setField("bloodGroup")}>
+                  <option value="">Not set</option>
+                  {BLOOD_GROUPS.map((b) => <option key={b} value={b}>{b}</option>)}
+                </SelectField>
+                <TextAreaField label="Anecdote" value={draft.bio} onChange={setField("bio")} placeholder="A memory, a story, something people should know…" />
+                {saveError && <div style={{ fontFamily: FONT, fontSize: 12, color: "#F87171" }}>{saveError}</div>}
+                <div className="flex gap-2 justify-end">
+                  <GlassButton variant="ghost" onClick={() => setEditing(false)} disabled={saving}>Cancel</GlassButton>
+                  <GlassButton variant="primary" onClick={saveEdit} disabled={saving}>{saving ? "Saving…" : "Save details"}</GlassButton>
+                </div>
+              </div>
+            ) : (
+              <>
+                <div className="grid grid-cols-2 gap-2.5 mt-6">
+                  <PillChip icon={User} label="Age" value={member.deceased ? "In loving memory" : computeAge(v.birthYear)} />
+                  <PillChip icon={Droplet} label="Blood Group" value={v.bloodGroup} />
+                  <PillChip icon={Ruler} label="Height" value={v.height} />
+                  <PillChip icon={Phone} label="Phone" value={phone} />
+                  <div className="col-span-2"><PillChip icon={Mail} label="Email" value={v.email} /></div>
+                </div>
+                <button type="button" onClick={startEdit} className="obsidian-btn flex items-center justify-center gap-2 w-full mt-3" style={{ padding: "11px 14px", borderRadius: 12, border: `1px solid ${HAIRLINE}`, background: "rgba(255,255,255,0.03)", fontFamily: FONT, fontSize: 13, fontWeight: 500, color: IRIS_LIGHT, cursor: "pointer" }}>
+                  <Pencil size={13} /> Edit details
+                </button>
+              </>
+            )}
 
             {(spouse || children.length > 0) && (
               <div className="grid grid-cols-2 gap-4 mt-5" style={{ fontFamily: FONT, fontSize: 12.5, color: TEXT_SECONDARY }}>
@@ -83,7 +144,7 @@ export default function ProfileDossier({ member, members, onClose, onUploadPhoto
 
             <PhotoGallery photos={photoUrls} onUpload={onUploadPhoto} onOpen={(i) => setLightboxIndex(i)} />
 
-            {member.bio ? (
+            {!editing && member.bio ? (
               <>
                 <div style={{ height: 1, background: HAIRLINE, margin: "22px 0" }} />
                 <div style={{ fontFamily: FONT, fontSize: 11, letterSpacing: "0.04em", color: TEXT_TERTIARY, textTransform: "uppercase", marginBottom: 6 }}>Anecdote</div>

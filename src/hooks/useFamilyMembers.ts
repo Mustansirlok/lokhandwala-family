@@ -1,6 +1,6 @@
 "use client";
 import { useCallback, useEffect, useState } from "react";
-import type { AvatarConfig, FamilyMemberDTO } from "@/lib/avatarOptions";
+import type { AvatarConfig, FamilyMemberDTO, Vitals } from "@/lib/avatarOptions";
 import { resizeImageFile } from "@/lib/resizeImage";
 
 // Survives page changes (client-side navigation), so switching tabs shows
@@ -74,5 +74,16 @@ export function useFamilyMembers() {
     return photo;
   }, []);
 
-  return { members, loading, error, refetch, saveAvatar, addPhoto };
+  const updateDetails = useCallback(async (id: string, details: Partial<Vitals> & { bio?: string }) => {
+    const res = await fetch(`/api/members/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(details),
+    });
+    const body = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(body.error || `Couldn't save (server returned ${res.status})`);
+    setMembers((prev) => prev.map((m) => (m.id === id ? { ...m, vitals: body.member.vitals, bio: body.member.bio } : m)));
+  }, []);
+
+  return { members, loading, error, refetch, saveAvatar, addPhoto, updateDetails };
 }
