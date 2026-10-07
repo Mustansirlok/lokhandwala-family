@@ -61,7 +61,9 @@ function ColorField({ label, value, onChange }: { label: string; value: string; 
 }
 
 export default function AvatarBuilder({ avatar, onChange, mobile = false }: { avatar: AvatarConfig; mobile?: boolean; onChange: <K extends keyof AvatarConfig>(field: K, value: AvatarConfig[K]) => void }) {
-  const [tab, setTab] = useState<string>("face");
+  const [tab, setTab] = useState<string>(avatar.face ? "top" : "face");
+  const outfitOnly = !!avatar.face;
+  const tabs = outfitOnly ? TABS.filter((t) => ["top","bottom","shoes","accessories"].includes(t.id)) : TABS;
   const setField = <K extends keyof AvatarConfig>(field: K) => (value: AvatarConfig[K]) => onChange(field, value);
   const hairCatalog = avatar.gender === "women" ? WOMEN_HAIR_OPTIONS : MEN_HAIR_OPTIONS;
 
@@ -74,7 +76,7 @@ export default function AvatarBuilder({ avatar, onChange, mobile = false }: { av
   return (
     <div className="flex flex-col h-full min-w-0" style={{ minHeight: 0 }}>
       <div className="tab-strip flex flex-nowrap gap-2 overflow-x-auto" style={{ flexShrink: 0, paddingBottom: 10, WebkitOverflowScrolling: "touch" }}>
-        {TABS.map((t) => {
+        {tabs.map((t) => {
           const active = tab === t.id;
           const Icon = t.icon;
           return (

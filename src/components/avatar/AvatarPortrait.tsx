@@ -4,10 +4,12 @@ import {
 } from "@/lib/avatarOptions";
 import { renderHairBack, renderHairFront } from "./hair";
 import { renderTop, renderBottom } from "./garments";
+import CartoonHead from "./CartoonHead";
 
 export default function AvatarPortrait({
-  avatar, size = 120, crop = "full", animated = true, id = "",
+  avatar, size = 120, crop = "full", animated = true, id = "", age,
 }: {
+  age?: number;
   avatar: AvatarConfig;
   size?: number;
   crop?: "full" | "bust";
@@ -81,6 +83,10 @@ export default function AvatarPortrait({
             </>
           )}
 
+          {avatar.face ? (
+            <CartoonHead face={avatar.face} age={age} idBase={idBase} />
+          ) : (
+            <>
           <rect x="88" y="140" width="24" height="30" fill={`url(#${neckGradId})`} />
           <path d={facePath} fill={`url(#${skinGradId})`} />
           <ellipse cx="72" cy="112" rx="9" ry="6.5" fill={skinLight} opacity="0.26" />
@@ -102,6 +108,9 @@ export default function AvatarPortrait({
           <path d="M90 125 Q100 131 110 125" fill="none" stroke="#241C14" strokeOpacity="0.55" strokeWidth="1.5" strokeLinecap="round" />
 
           {renderHairFront(hairValid, hairHex, `net-${idBase}`, `fade-${idBase}`)}
+
+            </>
+          )}
 
           {has("cap") && (
             <g>

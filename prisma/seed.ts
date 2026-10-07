@@ -15,6 +15,7 @@
 import { PrismaClient } from "@prisma/client";
 import type { AvatarConfig } from "../src/lib/avatarOptions";
 import { defaultAvatar } from "../src/lib/avatarOptions";
+import { faceAvatarFor } from "../src/lib/faces";
 
 const prisma = new PrismaClient();
 
@@ -138,7 +139,7 @@ async function main() {
         relation: relationFor(p),
         birthYear: p.birthYear ?? null,
         deceased: p.deceased ?? false,
-        avatar: defaultAvatar(p.avatar || {}) as any,
+        avatar: defaultAvatar({ ...(p.avatar || {}), ...(faceAvatarFor(p.key) || {}) }) as any,
       },
     });
     idByKey.set(p.key, created.id);

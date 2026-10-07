@@ -1,6 +1,42 @@
 export type Gender = "men" | "women";
 
+/** Per-person cartoon likeness. Fixed face/hair; the Atelier only edits outfits. */
+export interface AvatarFace {
+  skin: string;                       // hex
+  hair: "straight-fringe" | "messy-waves" | "short-crop" | "curly-top" | "bald" | "long-straight" | "bob" | "hijab" | "pulled-back" | "side-braid" | "covered" | "side-sweep" | "tousled" | "toddler-curls" | "wavy-fringe" | "receding" | "bald-sides" | "parted-covered" | "full-bob" | "side-wave" | "baby-wisps";
+  hairColor: string;                  // hex (greys automatically with age)
+  facialHair: "none" | "stubble" | "moustache" | "goatee" | "goatee-moustache" | "full-beard" | "long-beard" | "bushy-beard" | "trimmed-beard";
+  faceWidth?: number;                 // 0.85 – 1.15
+  jaw?: number;                       // 0 soft … 1 square
+  eyes?: "relaxed" | "open" | "happy" | "laugh";
+  brow?: number;                      // 0.6 thin … 1.6 thick
+  browArch?: number;                  // 0 flat … 1 arched
+  mouth?: "smirk" | "smile" | "neutral" | "grin";
+  nose?: number;                      // 0.8 small … 1.3 big
+  earSize?: number;
+  glasses?: "none" | "round" | "rect" | "cat-eye" | "wayfarer";
+  glassesColor?: string;
+  glassesTint?: string;               // lens fill, e.g. "rgba(90,60,40,0.25)"
+  beardColor?: string;                // overrides hair colour for facial hair (e.g. grey beard)
+  wrinkles?: number;                  // 0..1 explicit age lines (overrides birth-year ageing)
+  lashes?: boolean;
+  baby?: boolean;                      // infant proportions: very round head, big eyes, tiny nose
+  bow?: string;                        // hair bow colour
+  childLike?: boolean;                 // rounder, bigger-eyed proportions
+  earring?: boolean;
+  headCover?: "none" | "dupatta" | "hijab" | "topi";
+  headCoverColor?: string;
+  headCoverTrim?: string;              // dupatta border colour
+  lipColor?: string;                   // lipstick, e.g. "#8E2F3F"
+  hairFlowers?: boolean;               // little white flowers tucked in the hair
+  tikka?: boolean;                     // gold forehead chain along the parting
+  hairStreak?: string;                 // e.g. grey streaks through dark hair
+  hairTexture?: number;                // 0 sleek … 1 very textured
+  mole?: { x: number; y: number }; // offset from face centre, in avatar units (e.g. 28, 30)
+}
+
 export interface AvatarConfig {
+  face?: AvatarFace;
   gender: Gender;
   faceShape: string;
   skin: string;
