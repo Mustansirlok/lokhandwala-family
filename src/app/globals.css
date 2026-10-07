@@ -89,3 +89,7 @@ html { -webkit-text-size-adjust: 100%; }
   .seg-btn { padding: 6px 12px; }
   .brand-sub { display: none; }
 }
+
+/* Atelier: tab strip scrolls sideways without a visible scrollbar */
+.tab-strip { scrollbar-width: none; }
+.tab-strip::-webkit-scrollbar { display: none; }

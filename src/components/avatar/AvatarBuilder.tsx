@@ -35,7 +35,7 @@ function OptionGrid({ options, value, onChange, renderSwatch }: {
             type="button"
             aria-pressed={active}
             onClick={() => onChange(opt.id)}
-            className="obsidian-btn text-left px-3 py-2.5 flex items-center gap-2.5"
+            className="obsidian-btn text-left px-3 py-3 flex items-center gap-2.5"
             style={{ border: `1px solid ${active ? IRIS : GLASS_BORDER}`, background: active ? "rgba(139,92,246,0.14)" : "rgba(255,255,255,0.03)", borderRadius: 12, cursor: "pointer" }}
           >
             {renderSwatch ? renderSwatch(opt) : <span style={{ width: 7, height: 7, borderRadius: "50%", background: active ? IRIS_LIGHT : TEXT_TERTIARY, flexShrink: 0 }} />}
@@ -60,7 +60,7 @@ function ColorField({ label, value, onChange }: { label: string; value: string; 
   );
 }
 
-export default function AvatarBuilder({ avatar, onChange }: { avatar: AvatarConfig; onChange: <K extends keyof AvatarConfig>(field: K, value: AvatarConfig[K]) => void }) {
+export default function AvatarBuilder({ avatar, onChange, mobile = false }: { avatar: AvatarConfig; mobile?: boolean; onChange: <K extends keyof AvatarConfig>(field: K, value: AvatarConfig[K]) => void }) {
   const [tab, setTab] = useState<string>("face");
   const setField = <K extends keyof AvatarConfig>(field: K) => (value: AvatarConfig[K]) => onChange(field, value);
   const hairCatalog = avatar.gender === "women" ? WOMEN_HAIR_OPTIONS : MEN_HAIR_OPTIONS;
@@ -72,19 +72,20 @@ export default function AvatarBuilder({ avatar, onChange }: { avatar: AvatarConf
   };
 
   return (
-    <div>
-      <div className="flex flex-wrap gap-2 mb-5">
+    <div className="flex flex-col h-full min-w-0" style={{ minHeight: 0 }}>
+      <div className="tab-strip flex flex-nowrap gap-2 overflow-x-auto" style={{ flexShrink: 0, paddingBottom: 10, WebkitOverflowScrolling: "touch" }}>
         {TABS.map((t) => {
           const active = tab === t.id;
           const Icon = t.icon;
           return (
-            <button key={t.id} type="button" onClick={() => setTab(t.id)} className="obsidian-btn px-3 py-2 flex items-center gap-2" style={{ border: `1px solid ${active ? IRIS : GLASS_BORDER}`, background: active ? "rgba(139,92,246,0.18)" : "rgba(255,255,255,0.03)", color: active ? IRIS_LIGHT : TEXT_SECONDARY, borderRadius: 11, fontFamily: FONT, fontSize: 12, fontWeight: 500, cursor: "pointer" }}>
+            <button key={t.id} type="button" onClick={() => setTab(t.id)} className="obsidian-btn px-3 py-2 flex items-center gap-2" style={{ flexShrink: 0, whiteSpace: "nowrap", minHeight: 40, border: `1px solid ${active ? IRIS : GLASS_BORDER}`, background: active ? "rgba(139,92,246,0.18)" : "rgba(255,255,255,0.03)", color: active ? IRIS_LIGHT : TEXT_SECONDARY, borderRadius: 11, fontFamily: FONT, fontSize: 12, fontWeight: 500, cursor: "pointer" }}>
               <Icon size={13} /> {t.label}
             </button>
           );
         })}
       </div>
-      <div style={{ height: 1, background: HAIRLINE, margin: "0 0 18px" }} />
+      <div style={{ height: 1, background: HAIRLINE, flexShrink: 0 }} />
+      <div className="scroll-y" style={{ flex: 1, minHeight: 0, overflowY: "auto", WebkitOverflowScrolling: "touch", paddingTop: 14, paddingBottom: mobile ? "calc(24px + env(safe-area-inset-bottom))" : 16 }}>
 
       {tab === "face" && <OptionGrid options={FACE_SHAPE_OPTIONS} value={avatar.faceShape} onChange={setField("faceShape")} />}
 
@@ -146,7 +147,7 @@ export default function AvatarBuilder({ avatar, onChange }: { avatar: AvatarConf
               const active = (avatar.accessories || []).includes(opt.id);
               const atCap = !active && (avatar.accessories || []).length >= MAX_ACCESSORIES;
               return (
-                <button key={opt.id} type="button" aria-pressed={active} disabled={atCap} onClick={() => toggleAccessory(opt.id)} className="obsidian-btn text-left px-3 py-2.5 flex items-center gap-2.5" style={{ border: `1px solid ${active ? IRIS : GLASS_BORDER}`, background: active ? "rgba(139,92,246,0.14)" : "rgba(255,255,255,0.03)", borderRadius: 12, opacity: atCap ? 0.4 : 1, cursor: atCap ? "not-allowed" : "pointer" }}>
+                <button key={opt.id} type="button" aria-pressed={active} disabled={atCap} onClick={() => toggleAccessory(opt.id)} className="obsidian-btn text-left px-3 py-3 flex items-center gap-2.5" style={{ border: `1px solid ${active ? IRIS : GLASS_BORDER}`, background: active ? "rgba(139,92,246,0.14)" : "rgba(255,255,255,0.03)", borderRadius: 12, opacity: atCap ? 0.4 : 1, cursor: atCap ? "not-allowed" : "pointer" }}>
                   <span style={{ fontFamily: FONT, fontSize: 12.5, color: active ? TEXT_PRIMARY : TEXT_SECONDARY, flex: 1 }}>{opt.label}</span>
                   {active && <Check size={13} color={IRIS_LIGHT} strokeWidth={2.5} />}
                 </button>
@@ -155,6 +156,7 @@ export default function AvatarBuilder({ avatar, onChange }: { avatar: AvatarConf
           </div>
         </>
       )}
+      </div>
     </div>
   );
 }
